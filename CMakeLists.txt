@@ -25,6 +25,8 @@ find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(nav2_map_server REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(rviz_common REQUIRED)
 find_package(rviz_default_plugins REQUIRED)
 find_package(rviz_ogre_vendor REQUIRED)
@@ -52,6 +54,7 @@ set(dependencies
   std_msgs
   std_srvs
   builtin_interfaces
+  rclcpp_lifecycle
   rviz_common
   rviz_default_plugins
   rviz_ogre_vendor
@@ -157,6 +160,8 @@ add_library(sync_slam_toolbox src/slam_toolbox_sync.cpp)
 target_link_libraries(sync_slam_toolbox toolbox_common kartoSlamToolbox ${Boost_LIBRARIES})
 add_executable(sync_slam_toolbox_node src/slam_toolbox_sync_node.cpp)
 target_link_libraries(sync_slam_toolbox_node sync_slam_toolbox)
+add_executable(sync_slam_toolbox_node_lc src/slam_toolbox_sync_node_lc.cpp)
+target_link_libraries(sync_slam_toolbox_node_lc sync_slam_toolbox)
 
 add_library(localization_slam_toolbox src/slam_toolbox_localization.cpp)
 target_link_libraries(localization_slam_toolbox toolbox_common kartoSlamToolbox ${Boost_LIBRARIES})
@@ -190,6 +195,7 @@ target_link_libraries(merge_maps_kinematic kartoSlamToolbox toolbox_common)
 #### Install
 install(TARGETS async_slam_toolbox_node
                 sync_slam_toolbox_node
+                sync_slam_toolbox_node_lc
                 localization_slam_toolbox_node
                 map_and_localization_slam_toolbox_node
                 merge_maps_kinematic
