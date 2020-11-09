@@ -35,7 +35,7 @@ public:
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(
             const rclcpp_lifecycle::State &) override {
-        RCLCPP_INFO(get_logger(), "on_configure() is called.");
+        RCUTILS_LOG_INFO_NAMED(get_name(), "on_configure() is called.");
 
         int stack_size = 40000000;
         {
@@ -79,7 +79,7 @@ public:
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     on_cleanup(const rclcpp_lifecycle::State &) override {
-        RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.");
+        RCUTILS_LOG_INFO_NAMED(get_name(), "on_cleanup() is called.");
         sync_slam_toolbox.reset();
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
@@ -87,7 +87,7 @@ public:
 
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(
             const rclcpp_lifecycle::State &state) override {
-        RCUTILS_LOG_INFO_NAMED(get_name(), "on shutdown is called.");
+        RCUTILS_LOG_INFO_NAMED(get_name(), "on_shutdown() is called.");
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
 
