@@ -40,7 +40,8 @@ SlamToolbox::SlamToolbox(rclcpp::NodeOptions options)
   first_measurement_(true),
   process_near_pose_(nullptr),
   transform_timeout_(rclcpp::Duration(0.5 * 1000000000)),
-  minimum_time_interval_(0.)
+  minimum_time_interval_(0.),
+  shutdown_(false)
 /*****************************************************************************/
 {
   smapper_ = std::make_unique<mapper_utils::SMapper>();
@@ -83,6 +84,27 @@ void SlamToolbox::configure()
 SlamToolbox::~SlamToolbox()
 /*****************************************************************************/
 {
+  for (int i = 0; i != threads_.size(); i++) {
+    threads_[i]->join();
+  }
+
+  smapper_.reset();
+  dataset_.reset();
+  closure_assistant_.reset();
+  map_saver_.reset();
+  pose_helper_.reset();
+  laser_assistant_.reset();
+  scan_holder_.reset();
+  solver_.reset();
+}
+
+/*****************************************************************************/
+void SlamToolbox::shutdown()
+/*****************************************************************************/
+{
+  RCLCPP_INFO(get_logger(), "Shutting down SLAM Toolbox, stopping processing.");
+  shutdown_ = true; // stop processing loops in all threads
+
   for (int i = 0; i != threads_.size(); i++) {
     threads_[i]->join();
   }
@@ -223,7 +245,7 @@ void SlamToolbox::publishTransformLoop(
   }
 
   rclcpp::Rate r(1.0 / transform_publish_period);
-  while (rclcpp::ok()) {
+  while (rclcpp::ok() && !shutdown_) {
     {
       boost::mutex::scoped_lock lock(map_to_odom_mutex_);
       geometry_msgs::msg::TransformStamped msg;
@@ -257,7 +279,7 @@ void SlamToolbox::publishVisualizations()
       map_update_interval);
   rclcpp::Rate r(1.0 / map_update_interval);
 
-  while (rclcpp::ok()) {
+  while (rclcpp::ok() && !shutdown_) {
     updateMap();
     if (!isPaused(VISUALIZING_GRAPH)) {
       closure_assistant_->publishGraph();

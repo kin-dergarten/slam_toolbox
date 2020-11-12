@@ -80,6 +80,7 @@ public:
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     on_cleanup(const rclcpp_lifecycle::State &) override {
         RCUTILS_LOG_INFO_NAMED(get_name(), "on_cleanup() is called.");
+        sync_slam_toolbox->shutdown();
         sync_slam_toolbox.reset();
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
