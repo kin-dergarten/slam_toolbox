@@ -41,7 +41,7 @@ void SynchronousSlamToolbox::run()
 /*****************************************************************************/
 {
   rclcpp::Rate r(100);
-  while (rclcpp::ok()) {
+  while (rclcpp::ok() && !shutdown_) {
     if (!q_.empty() && !isPaused(PROCESSING)) {
       PosedScan scan_w_pose = q_.front();
       q_.pop();

@@ -63,6 +63,7 @@ public:
   SlamToolbox();
   virtual ~SlamToolbox();
   virtual void configure();
+  void shutdown();
   virtual void loadPoseGraphByParams();
 
 protected:
@@ -118,6 +119,9 @@ protected:
     const Pose2 & pose,
     const Matrix3 & cov,
     const rclcpp::Time & t);
+
+  //shutdown bit
+  std::atomic<bool> shutdown_;
 
   // pausing bits
   bool isPaused(const PausedApplication & app);
