@@ -32,6 +32,7 @@ find_package(rviz_ogre_vendor REQUIRED)
 find_package(rviz_rendering REQUIRED)
 find_package(interactive_markers REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Test Concurrent)
+find_package(rclcpp_lifecycle REQUIRED)
 
 #karto_sdk lib
 set(BUILD_SHARED_LIBS ON)
@@ -60,6 +61,7 @@ set(dependencies
   rviz_rendering
   interactive_markers
   Qt5
+  rclcpp_lifecycle
 )
 
 set(libraries
@@ -123,7 +125,7 @@ target_link_libraries(SlamToolboxPlugin ${QT_LIBRARIES} rviz_common::rviz_common
 rosidl_target_interfaces(SlamToolboxPlugin ${PROJECT_NAME} "rosidl_typesupport_cpp")
 target_compile_definitions(SlamToolboxPlugin PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
 target_compile_definitions(SlamToolboxPlugin PRIVATE "RVIZ_DEFAULT_PLUGINS_BUILDING_LIBRARY")
-pluginlib_export_plugin_description_file(rviz_common rviz_plugins.xml) 
+pluginlib_export_plugin_description_file(rviz_common rviz_plugins.xml)
 
 #### Ceres Plugin
 add_library(ceres_solver_plugin solvers/ceres_solver.cpp)
@@ -154,6 +156,8 @@ add_library(sync_slam_toolbox src/slam_toolbox_sync.cpp)
 target_link_libraries(sync_slam_toolbox toolbox_common kartoSlamToolbox ${Boost_LIBRARIES})
 add_executable(sync_slam_toolbox_node src/slam_toolbox_sync_node.cpp)
 target_link_libraries(sync_slam_toolbox_node sync_slam_toolbox)
+add_executable(sync_slam_toolbox_node_lc src/slam_toolbox_sync_node_lc.cpp)
+target_link_libraries(sync_slam_toolbox_node_lc sync_slam_toolbox)
 
 add_library(localization_slam_toolbox src/slam_toolbox_localization.cpp)
 target_link_libraries(localization_slam_toolbox toolbox_common kartoSlamToolbox ${Boost_LIBRARIES})
@@ -182,6 +186,7 @@ target_link_libraries(merge_maps_kinematic kartoSlamToolbox toolbox_common)
 #### Install
 install(TARGETS async_slam_toolbox_node
                 sync_slam_toolbox_node
+                sync_slam_toolbox_node_lc
                 localization_slam_toolbox_node
                 lifelong_slam_toolbox_node
                 merge_maps_kinematic
