@@ -67,7 +67,18 @@ void SlamToolbox::configure()
     std::make_unique<loop_closure_assistant::LoopClosureAssistant>(
     shared_from_this(), smapper_->getMapper(), scan_holder_.get(),
     state_, processor_type_);
-  reprocessing_transform_.setIdentity();
+
+  try {
+    auto map_odom_transform_msg = tf_->lookupTransform(map_frame_, odom_frame_,rclcpp::Time(0));
+    tf2::fromMsg(map_odom_transform_msg.transform, reprocessing_transform_);
+    RCLCPP_INFO(get_logger(), "Setting initial reprocessing_transform to: %f, %f, %f",
+                reprocessing_transform_.getOrigin().x(),
+                reprocessing_transform_.getOrigin().y(),
+                tf2::getYaw(reprocessing_transform_.getRotation()));
+  } catch (tf2::TransformException & e) {
+    RCLCPP_WARN(get_logger(), "Failed to get initial map to odom transform: %s", e.what());
+    reprocessing_transform_.setIdentity();
+  }
 
   double transform_publish_period = 0.05;
   transform_publish_period =
