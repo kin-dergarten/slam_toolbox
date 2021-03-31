@@ -15,7 +15,7 @@
  *
  */
 
-/* Author: Philipp Gotzmann */
+/* Author: PGotzmann */
 
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
