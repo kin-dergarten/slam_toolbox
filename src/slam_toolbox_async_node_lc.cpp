@@ -21,7 +21,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp>
-#include "slam_toolbox/slam_toolbox_sync.hpp"
+#include "slam_toolbox/slam_toolbox_async.hpp"
 
 
 class LifecycleSyncSlamToolbox : public rclcpp_lifecycle::LifecycleNode {
@@ -54,7 +54,7 @@ public:
         }
 
         rclcpp::NodeOptions options;
-        sync_slam_toolbox = std::make_shared<slam_toolbox::SynchronousSlamToolbox>(options);
+        async_slam_toolbox = std::make_shared<slam_toolbox::AsynchronousSlamToolbox>(options);
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
@@ -62,9 +62,9 @@ public:
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     on_activate(const rclcpp_lifecycle::State &) override {
         RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.");
-        sync_slam_toolbox->configure();
-        sync_slam_toolbox->loadPoseGraphByParams();
-        executor->add_node(sync_slam_toolbox->get_node_base_interface());
+        async_slam_toolbox->configure();
+        async_slam_toolbox->loadPoseGraphByParams();
+        executor->add_node(async_slam_toolbox->get_node_base_interface());
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
@@ -72,7 +72,7 @@ public:
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(
             const rclcpp_lifecycle::State &) override {
         RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
-        executor->remove_node(sync_slam_toolbox->get_node_base_interface());
+        executor->remove_node(async_slam_toolbox->get_node_base_interface());
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
@@ -80,8 +80,8 @@ public:
     rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
     on_cleanup(const rclcpp_lifecycle::State &) override {
         RCUTILS_LOG_INFO_NAMED(get_name(), "on_cleanup() is called.");
-        sync_slam_toolbox->shutdown();
-        sync_slam_toolbox.reset();
+        async_slam_toolbox->shutdown();
+        async_slam_toolbox.reset();
 
         return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
     }
@@ -94,7 +94,7 @@ public:
 
 private:
     rclcpp::executors::SingleThreadedExecutor *executor;
-    std::shared_ptr<slam_toolbox::SynchronousSlamToolbox> sync_slam_toolbox;
+    std::shared_ptr<slam_toolbox::AsynchronousSlamToolbox> async_slam_toolbox;
 };
 
 int main(int argc, char **argv) {
