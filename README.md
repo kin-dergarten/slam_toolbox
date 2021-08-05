@@ -20,7 +20,6 @@ You can find this work [here](https://joss.theoj.org/papers/10.21105/joss.02783)
 
 > Macenski, S., "On Use of SLAM Toolbox, A fresh(er) look at mapping and localization for the dynamic world", ROSCon 2019.
 
-
 [![IMAGE ALT TEXT](https://user-images.githubusercontent.com/14944147/74176653-f69beb80-4bec-11ea-906a-a233541a6064.png)](https://vimeo.com/378682207)
 
 # Introduction
