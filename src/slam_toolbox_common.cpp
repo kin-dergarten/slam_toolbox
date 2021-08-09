@@ -41,7 +41,7 @@ SlamToolbox::SlamToolbox(rclcpp::NodeOptions options)
   first_measurement_(true),
   process_near_pose_(nullptr),
   transform_timeout_(rclcpp::Duration::from_seconds(0.5)),
-  minimum_time_interval_(std::chrono::nanoseconds(0))
+  minimum_time_interval_(std::chrono::nanoseconds(0)),
   shutdown_(false)
 /*****************************************************************************/
 {
