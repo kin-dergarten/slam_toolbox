@@ -63,6 +63,7 @@ public:
   SlamToolbox();
   ~SlamToolbox();
   void configure();
+  void shutdown();
   virtual void loadPoseGraphByParams();
 
 protected:
@@ -114,6 +115,9 @@ protected:
   bool shouldProcessScan(
     const sensor_msgs::msg::LaserScan::ConstSharedPtr & scan,
     const karto::Pose2 & pose);
+
+  //shutdown bit
+  std::atomic<bool> shutdown_;
 
   // pausing bits
   bool isPaused(const PausedApplication & app);
